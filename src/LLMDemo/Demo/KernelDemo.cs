@@ -3,7 +3,7 @@ using Microsoft.SemanticKernel.Connectors.OpenAI;
 
 #pragma warning disable SKEXP0010
 
-namespace DeepSeekDemo.Demo
+namespace LLMDemos.Demo
 {
     internal class KernelDemo
     {

@@ -1,10 +1,13 @@
 ﻿using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Microsoft.SemanticKernel;
+using Microsoft.Extensions.AI;
+using OpenAI;
+using System.ClientModel;
 
 #pragma warning disable SKEXP0010
 
-namespace DeepSeekDemo.Demo
+namespace LLMDemos.Demo
 {
     internal class LLMDemo
     {
@@ -16,10 +19,11 @@ namespace DeepSeekDemo.Demo
             Console.WriteLine($"Me:{message}");
             var chatHistory = new ChatHistory();
             chatHistory.AddSystemMessage("请使用中文与我对话。");
-            chatHistory.AddUserMessage($"{message}<think>\\n\\n</think>");
+            chatHistory.AddUserMessage(message);
 
             while (true)
             {
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("LLM:");
                 //var reply = await chatCompletionService.GetChatMessageContentAsync(chatHistory);
                 //Console.WriteLine(reply);
@@ -36,6 +40,7 @@ namespace DeepSeekDemo.Demo
 
                 Console.WriteLine();
                 Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Gray;
                 Console.Write($"Me:");
                 var nextMessage = Console.ReadLine();
                 if (string.IsNullOrEmpty(nextMessage))
@@ -43,6 +48,52 @@ namespace DeepSeekDemo.Demo
                     break;
                 }
                 chatHistory.AddUserMessage(nextMessage);
+            }
+        }
+
+        public async static Task RunEAI(string modelId, string apiKey, Uri endPoint)
+        {
+            var apiKeyCredential = new ApiKeyCredential(apiKey);
+            var aiClientOptions = new OpenAIClientOptions
+            {
+                Endpoint = endPoint
+            };
+            var aiClient = new OpenAIClient(apiKeyCredential, aiClientOptions)
+                .AsChatClient(modelId);
+
+            var message = "你好";
+            Console.WriteLine($"Me:{message}");
+            var chatHistory = new List<ChatMessage>
+            {
+                new ChatMessage(ChatRole.System, "请使用中文回复。"),
+                new ChatMessage(ChatRole.User, message)
+            };
+
+            while (true)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("LLM:");
+
+                // Start streaming chat based on the chat history
+                await foreach (var chatUpdate in aiClient.GetStreamingResponseAsync(chatHistory))
+                {
+                    // Access the response update via StreamingChatMessageContent.Content property
+                    Console.Write(chatUpdate);
+
+                    // Alternatively, the response update can be accessed via the StreamingChatMessageContent.Items property
+                    //Console.Write(chatUpdate.Items.OfType<StreamingTextContent>().FirstOrDefault());
+                }
+
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.Write($"Me:");
+                var nextMessage = Console.ReadLine();
+                if (string.IsNullOrEmpty(nextMessage))
+                {
+                    break;
+                }
+                chatHistory.Add(new ChatMessage(ChatRole.User, nextMessage));
             }
         }
     }

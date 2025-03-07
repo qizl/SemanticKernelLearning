@@ -1,9 +1,15 @@
-﻿using DeepSeekDemo.Demo;
+﻿using LLMDemos.Demo;
+using Microsoft.Extensions.Configuration;
 
-var modelId = "qwen2.5-7b-instruct-1m";
-//var modelId= "deepseek-r1-distill-qwen-14b";
-var endPoint = new Uri("http://127.0.0.1:1234/v1");
+var config = new ConfigurationBuilder()
+    .AddJsonFile($"appsettings.json")
+    .Build();
 
-await LLMDemo.Run(modelId, endPoint);
+var modelId = config["LLM:ModelId"];
+var apiKey = config["LLM:ApiKey"];
+var endPoint = new Uri(config["LLM:EndPoint"]);
+
+await LLMDemo.RunEAI(modelId, apiKey, endPoint);
+//await LLMDemo.Run(modelId, endPoint);
 
 //await KernelDemo.Run(modelId, endPoint);

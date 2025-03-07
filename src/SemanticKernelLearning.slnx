@@ -1,4 +1,4 @@
 <Solution>
-  <Project Path="LLMDemo/LLMDemo.csproj" />
+  <Project Path="LLMDemo/LLMDemos.csproj" Id="69631d66-c784-55b9-b655-c0ef635245c4" />
   <Project Path="SemanticKernelDemo/SemanticKernelDemo.csproj" />
 </Solution>
