@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="LLMDemo/LLMDemo.csproj" />
+  <Project Path="SemanticKernelDemo/SemanticKernelDemo.csproj" />
+</Solution>
