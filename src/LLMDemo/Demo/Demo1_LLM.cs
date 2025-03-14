@@ -9,22 +9,22 @@ using System.ClientModel;
 
 namespace LLMDemos.Demo
 {
-    internal class LLMDemo
+    internal class Demo1_LLM
     {
-        public async static Task Run(string modelId, Uri endPoint)
+        public async static Task Run(string modelId, string apiKey, Uri endPoint)
         {
-            var chatCompletionService = new OpenAIChatCompletionService(modelId, endPoint);
+            var chatCompletionService = new OpenAIChatCompletionService(modelId, endPoint, apiKey);
 
             var message = "你好";
             Console.WriteLine($"Me:{message}");
             var chatHistory = new ChatHistory();
-            chatHistory.AddSystemMessage("请使用中文与我对话。");
+            chatHistory.AddSystemMessage("请使用中文回复。");
             chatHistory.AddUserMessage(message);
 
             while (true)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("LLM:");
+                Console.Write("LLM:");
                 //var reply = await chatCompletionService.GetChatMessageContentAsync(chatHistory);
                 //Console.WriteLine(reply);
 
@@ -72,7 +72,7 @@ namespace LLMDemos.Demo
             while (true)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("LLM:");
+                Console.Write("LLM:");
 
                 // Start streaming chat based on the chat history
                 await foreach (var chatUpdate in aiClient.GetStreamingResponseAsync(chatHistory))

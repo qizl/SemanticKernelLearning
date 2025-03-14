@@ -9,7 +9,8 @@ var modelId = config["LLM:ModelId"];
 var apiKey = config["LLM:ApiKey"];
 var endPoint = new Uri(config["LLM:EndPoint"]);
 
-await LLMDemo.RunEAI(modelId, apiKey, endPoint);
-//await LLMDemo.Run(modelId, endPoint);
+//await Demo1_LLM.Run(modelId, apiKey, endPoint);
+//await Demo1_LLM.RunEAI(modelId, apiKey, endPoint);
 
-//await KernelDemo.Run(modelId, endPoint);
+//await Demo2_Kernel_CreateFunctionFromPrompt.RunAsync(modelId, apiKey, endPoint);
+await Demo3_Kernel_CreateFunctionFromMethod.RunAsync(modelId, apiKey, endPoint);

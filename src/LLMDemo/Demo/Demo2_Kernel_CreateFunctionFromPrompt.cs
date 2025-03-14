@@ -5,17 +5,17 @@ using Microsoft.SemanticKernel.Connectors.OpenAI;
 
 namespace LLMDemos.Demo
 {
-    internal class KernelDemo
+    internal class Demo2_Kernel_CreateFunctionFromPrompt
     {
-        public async static Task Run(string modelId, Uri endPoint)
+        public static async Task RunAsync(string modelId, string apiKey, Uri endPoint)
         {
             var builder = Kernel.CreateBuilder();
 
-            builder.AddOpenAIChatCompletion(modelId, endPoint, null);
+            builder.AddOpenAIChatCompletion(modelId, endPoint, apiKey);
 
             var kernel = builder.Build();
 
-            var prompt = @"{{$input}} One line TLDR with the fewest words.";
+            var prompt = @"{{$input}} One line TLDR with the fewest words.请使用中文回复。";
 
             var summarize = kernel.CreateFunctionFromPrompt(prompt, executionSettings: new OpenAIPromptExecutionSettings { MaxTokens = 100 });
 
@@ -32,12 +32,6 @@ namespace LLMDemos.Demo
             Console.WriteLine(await kernel.InvokeAsync(summarize, new() { ["input"] = text1 }));
 
             Console.WriteLine(await kernel.InvokeAsync(summarize, new() { ["input"] = text2 }));
-
-            // Output:
-            //   Energy conserved, entropy increases, zero entropy at 0K.
-            //   Objects move in response to forces.
-
-            Console.ReadKey();
         }
     }
 }
