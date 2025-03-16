@@ -4,6 +4,7 @@ using Microsoft.SemanticKernel;
 using Microsoft.Extensions.AI;
 using OpenAI;
 using System.ClientModel;
+using System.Text;
 
 #pragma warning disable SKEXP0010
 
@@ -21,6 +22,7 @@ namespace LLMDemos.Demo
             chatHistory.AddSystemMessage("请使用中文回复。");
             chatHistory.AddUserMessage(message);
 
+            var llmAnswer = new StringBuilder();
             while (true)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
@@ -28,6 +30,7 @@ namespace LLMDemos.Demo
                 //var reply = await chatCompletionService.GetChatMessageContentAsync(chatHistory);
                 //Console.WriteLine(reply);
 
+                llmAnswer.Clear();
                 // Start streaming chat based on the chat history
                 await foreach (StreamingChatMessageContent chatUpdate in chatCompletionService.GetStreamingChatMessageContentsAsync(chatHistory))
                 {
@@ -36,7 +39,10 @@ namespace LLMDemos.Demo
 
                     // Alternatively, the response update can be accessed via the StreamingChatMessageContent.Items property
                     //Console.Write(chatUpdate.Items.OfType<StreamingTextContent>().FirstOrDefault());
+
+                    llmAnswer.Append(chatUpdate.Content);
                 }
+                chatHistory.AddAssistantMessage(llmAnswer.ToString()); // 流式回复结束后添加到历史记录中
 
                 Console.WriteLine();
                 Console.WriteLine();
