@@ -1,4 +1,6 @@
-﻿using Microsoft.SemanticKernel;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using System.ComponentModel;
@@ -10,9 +12,10 @@ namespace LLMDemos.Demo
 {
     internal class Demo3_Kernel_CreateFunctionFromMethod
     {
-        public static async Task RunAsync(string modelId, string apiKey, Uri endPoint)
+        public static async Task RunAsync(IConfigurationRoot config, string modelId, string apiKey, Uri endPoint)
         {
             var builder = Kernel.CreateBuilder();
+            builder.Services.AddSingleton<IConfiguration>(config);
             builder.AddOpenAIChatCompletion(modelId, endPoint, apiKey);
             builder.Plugins.AddFromType<DemoPlugin>(nameof(DemoPlugin));
             var kernel = builder.Build();
@@ -132,6 +135,13 @@ namespace LLMDemos.Demo
 
     internal class DemoPlugin
     {
+        private readonly IConfiguration _config;
+
+        public DemoPlugin(IConfiguration config)
+        {
+            _config = config;
+        }
+
         [KernelFunction("get_weather_for_city")]
         [Description("获取指定城市的天气")]
         public string GetWeatherForCity(string cityName)
@@ -150,6 +160,53 @@ namespace LLMDemos.Demo
             Console.Write($"（{nameof(Save2Db)}：正在将内容保存到数据库...{content}）");
 
             return true;
+        }
+
+        [KernelFunction("search_web")]
+        [Description("搜索网络数据")]
+        public async Task<string> SearhWebAsync(string keywords)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine();
+            Console.WriteLine($"（{nameof(SearhWebAsync)}：正在搜索网络数据...{keywords}）");
+
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_config["BochaAI:ApiKey"]}");
+
+            var requestBody = new
+            {
+                query = keywords,
+                freshness = "noLimit",
+                summary = true,
+                count = 10
+            };
+
+            var jsonContent = new StringContent(
+                System.Text.Json.JsonSerializer.Serialize(requestBody),
+                System.Text.Encoding.UTF8,
+                "application/json"
+            );
+
+            var response = await httpClient.PostAsync(new Uri(_config["BochaAI:EndPoint"]!), jsonContent);
+            var content = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine($"（{nameof(GetUriContentAsync)}：{content}）");
+
+            return content;
+        }
+
+        [KernelFunction("get_web_uri_content")]
+        [Description("获取网页内容")]
+        public async Task<string> GetUriContentAsync(string uri)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write($"（{nameof(GetUriContentAsync)}：正在获取网页内容...{uri}）");
+
+            using var httpClient = new HttpClient();
+            var response = await httpClient.GetAsync(uri);
+            var content = await response.Content.ReadAsStringAsync();
+
+            return content;
         }
     }
 }
