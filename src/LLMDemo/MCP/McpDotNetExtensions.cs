@@ -4,7 +4,7 @@ using McpDotNet.Protocol.Types;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.SemanticKernel;
 
-namespace LLMDemos.Demo.MCP
+namespace LLMDemos.MCP
 {
     /// <summary>
     /// Extension methods for McpDotNet

@@ -1,5 +1,6 @@
 ﻿using LLMDemos.Demo;
 using Microsoft.Extensions.Configuration;
+using System.Net;
 
 var config = new ConfigurationBuilder()
     .AddJsonFile($"appsettings.json")
@@ -18,4 +19,6 @@ var endPoint = new Uri(config["LLM:EndPoint"]!);
 //await Demo4_MCP.RunAsync(modelId, apiKey, endPoint);
 
 //await Demo5_Agent.RunAgentAsync(modelId, apiKey, endPoint);
-await Demo5_Agent.RunAgentGroupChatAsync(config, modelId, apiKey, endPoint);
+//await Demo5_Agent.RunAgentGroupChatAsync(config, modelId, apiKey, endPoint);
+
+await Demo6_RAG.RunAsync(config, modelId, apiKey, endPoint);

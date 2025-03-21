@@ -1,4 +1,4 @@
-﻿using LLMDemos.Demo.MCP;
+﻿using LLMDemos.MCP;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
@@ -15,7 +15,6 @@ namespace LLMDemos.Demo
             // Prepare and build kernel
             var builder = Kernel.CreateBuilder();
             builder.AddOpenAIChatCompletion(modelId, endPoint, apiKey);
-
             Kernel kernel = builder.Build();
 
             // Create an MCPClient for the GitHub server

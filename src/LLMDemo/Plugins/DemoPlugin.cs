@@ -2,7 +2,7 @@
 using Microsoft.SemanticKernel;
 using System.ComponentModel;
 
-namespace LLMDemos.Demo.Plugins
+namespace LLMDemos.Plugins
 {
     internal class DemoPlugin
     {
@@ -77,6 +77,7 @@ namespace LLMDemos.Demo.Plugins
             var defaultForegroundColor = Console.ForegroundColor;
 
             Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine();
             Console.Write($"（{nameof(GetUriContentAsync)}：正在获取网页内容...{uri}）");
 
             using var httpClient = new HttpClient();
