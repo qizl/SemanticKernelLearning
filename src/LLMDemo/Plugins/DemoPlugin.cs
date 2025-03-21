@@ -63,8 +63,7 @@ namespace LLMDemos.Plugins
             var response = await httpClient.PostAsync(new Uri(_config["BochaAI:EndPoint"]!), jsonContent);
             var content = await response.Content.ReadAsStringAsync();
 
-            Console.WriteLine($"（{nameof(GetUriContentAsync)}：{content}）");
-
+            Console.WriteLine($"（{nameof(SearhWebAsync)}：{content}）");
             Console.ForegroundColor = defaultForegroundColor;
 
             return content;
@@ -84,6 +83,7 @@ namespace LLMDemos.Plugins
             var response = await httpClient.GetAsync(uri);
             var content = await response.Content.ReadAsStringAsync();
 
+            Console.WriteLine($"（{nameof(GetUriContentAsync)}：{content}）");
             Console.ForegroundColor = defaultForegroundColor;
 
             return content;

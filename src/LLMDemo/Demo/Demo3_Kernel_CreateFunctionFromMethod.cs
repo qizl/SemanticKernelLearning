@@ -52,6 +52,7 @@ namespace LLMDemos.Demo
             chatHistory.AddUserMessage(message);
 
             var llmAnswer = new StringBuilder();
+            var fccBuilder = new FunctionCallContentBuilder();
             while (true)
             {
                 Console.Write("LLM:");
@@ -70,7 +71,24 @@ namespace LLMDemos.Demo
                         //Console.Write(chatUpdate.Items.OfType<StreamingTextContent>().FirstOrDefault());
 
                         llmAnswer.Append(chatUpdate.Content);
+                        fccBuilder.Append(chatUpdate);
                     }
+
+                    var functionCalls = fccBuilder.Build();
+                    if (functionCalls.Any())
+                    {
+                        //foreach (var functionCall in functionCalls)
+                        //{
+                        //    fcContent.Items.Add(functionCall);
+                        //    var functionResult = await functionCall.InvokeAsync(kernel);
+
+                        //    chatHistory.Add(functionResult.ToChatMessage());
+                        //}
+                    }
+                    else
+                    {
+                    }
+
                     chatHistory.AddAssistantMessage(llmAnswer.ToString()); // 流式回复结束后添加到历史记录中
                 }
                 else
