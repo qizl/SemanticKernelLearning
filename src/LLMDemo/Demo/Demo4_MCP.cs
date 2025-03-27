@@ -58,6 +58,7 @@ namespace LLMDemos.Demo
             chatHistory.AddUserMessage(message);
 
             var llmAnswer = new StringBuilder();
+            var fccBuilder = new FunctionCallContentBuilder();
             while (true)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
@@ -74,8 +75,24 @@ namespace LLMDemos.Demo
                     //Console.Write(chatUpdate.Items.OfType<StreamingTextContent>().FirstOrDefault());
 
                     llmAnswer.Append(chatUpdate.Content);
+                    fccBuilder.Append(chatUpdate);
                 }
-                chatHistory.AddAssistantMessage(llmAnswer.ToString()); // 流式回复结束后添加到历史记录中
+
+                // 1.添加函数调用结果到历史记录
+                var functionCalls = fccBuilder.Build();
+                if (functionCalls.Any())
+                {
+                    foreach (var functionCall in functionCalls)
+                    {
+                        //var functionResult = await functionCall.InvokeAsync(kernel);
+                        //chatHistory.Add(functionResult.ToChatMessage());
+
+                        chatHistory.Add(new FunctionResultContent(functionCall).ToChatMessage());
+                    }
+                }
+
+                // 2.添加流式回复结束后的回复到历史记录
+                chatHistory.AddAssistantMessage(llmAnswer.ToString()); 
 
                 Console.WriteLine();
                 Console.WriteLine();
