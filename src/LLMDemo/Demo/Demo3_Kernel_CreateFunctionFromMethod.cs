@@ -31,7 +31,7 @@ namespace LLMDemos.Demo
             //     kernel.CreateFunctionFromMethod(demoInstance.Save2Db, nameof(demoInstance.Save2Db), "将聊天记录保存到数据库。")
             //});
 
-            bool isFunctionChoiceBehaviorAuto = false;
+            bool isFunctionChoiceBehaviorAuto = true;
             //var settings = new OpenAIPromptExecutionSettings()
             //{
             //    Temperature = 0,
@@ -77,16 +77,13 @@ namespace LLMDemos.Demo
                     var functionCalls = fccBuilder.Build();
                     if (functionCalls.Any())
                     {
-                        //foreach (var functionCall in functionCalls)
-                        //{
-                        //    fcContent.Items.Add(functionCall);
-                        //    var functionResult = await functionCall.InvokeAsync(kernel);
+                        foreach (var functionCall in functionCalls)
+                        {
+                            //var functionResult = await functionCall.InvokeAsync(kernel);
+                            //chatHistory.Add(functionResult.ToChatMessage());
 
-                        //    chatHistory.Add(functionResult.ToChatMessage());
-                        //}
-                    }
-                    else
-                    {
+                            chatHistory.Add(new FunctionResultContent(functionCall).ToChatMessage());
+                        }
                     }
 
                     chatHistory.AddAssistantMessage(llmAnswer.ToString()); // 流式回复结束后添加到历史记录中
