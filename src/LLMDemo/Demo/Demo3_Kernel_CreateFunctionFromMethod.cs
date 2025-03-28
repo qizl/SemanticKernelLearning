@@ -71,19 +71,6 @@ namespace LLMDemos.Demo
                         //Console.Write(chatUpdate.Items.OfType<StreamingTextContent>().FirstOrDefault());
 
                         llmAnswer.Append(chatUpdate.Content);
-                        fccBuilder.Append(chatUpdate);
-                    }
-
-                    var functionCalls = fccBuilder.Build();
-                    if (functionCalls.Any())
-                    {
-                        foreach (var functionCall in functionCalls)
-                        {
-                            //var functionResult = await functionCall.InvokeAsync(kernel);
-                            //chatHistory.Add(functionResult.ToChatMessage());
-
-                            chatHistory.Add(new FunctionResultContent(functionCall).ToChatMessage());
-                        }
                     }
 
                     chatHistory.AddAssistantMessage(llmAnswer.ToString()); // 流式回复结束后添加到历史记录中
